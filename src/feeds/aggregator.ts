@@ -222,6 +222,36 @@ export class PriceAggregator {
     }
 
     /**
+     * Fetch quotes for all token permutations (for Triangular Arbitrage)
+     * Warning: N^2 complexity. Keep token list small.
+     */
+    async getAllPairQuotes(tokens: string[], amount: number = 1): Promise<PriceQuote[]> {
+        const quotes: PriceQuote[] = [];
+        const promises: Promise<PriceQuote[]>[] = [];
+
+        for (let i = 0; i < tokens.length; i++) {
+            for (let j = 0; j < tokens.length; j++) {
+                if (i === j) continue;
+
+                // Create a batch of requests
+                promises.push(
+                    this.getQuotesForPair(tokens[i], tokens[j], amount)
+                );
+            }
+        }
+
+        // Execute all batches
+        const results = await Promise.all(promises);
+
+        // Flatten results
+        results.forEach(batch => {
+            if (batch) quotes.push(...batch);
+        });
+
+        return quotes;
+    }
+
+    /**
      * Clear all caches
      */
     clearCaches(): void {

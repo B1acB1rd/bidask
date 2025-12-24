@@ -24,22 +24,30 @@ export interface PriceQuote {
 export interface ArbitrageOpportunity {
     id: string;
     tokenMint: string;
-    tokenSymbol?: string;
+    tokenSymbol: string;
 
-    // Buy side
+    // For Spot Arb (2-hop)
     buyDex: DexType;
     buyPrice: number;
     buyQuote: PriceQuote;
-
-    // Sell side
     sellDex: DexType;
     sellPrice: number;
     sellQuote: PriceQuote;
+
+    // For Triangular (Multi-hop)
+    isTriangular?: boolean;
+    path?: {
+        from: string;
+        to: string;
+        dex: DexType;
+        quote: PriceQuote;
+    }[];
 
     // Profit calculation
     spreadBps: number;           // Spread in basis points
     estimatedProfitBps: number;  // After fees
     estimatedProfitUsd: number;  // Estimated USD profit
+
     tradeSize: number;           // Trade size in tokens
     tradeSizeUsd: number;        // Trade size in USD
 

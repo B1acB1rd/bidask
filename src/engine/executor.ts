@@ -176,9 +176,24 @@ export class TradeExecutor {
                 }
             }
 
-            // Note: In production, you would add actual swap instructions here
-            // This requires integrating with Jupiter's transaction building API
-            // or building raw DEX instructions
+            // Note: In production, you would add actual swap instructions here:
+
+            if (opportunity.isTriangular && opportunity.path) {
+                // Multi-hop (Triangular)
+                // We would need to generate instructions for each leg:
+                // 1. Swap SOL -> A (path[0])
+                // 2. Swap A -> B (path[1])
+                // 3. Swap B -> SOL (path[2])
+
+                // Used for simulation logging
+                logger.debug(`Building transaction for 3-hop path: ${opportunity.path.map(p => p.dex).join(' -> ')}`);
+
+            } else {
+                // Standard 2-hop (Spot)
+                // 1. Swap SOL -> Token (buyQuote)
+                // 2. Swap Token -> SOL (sellQuote)
+                logger.debug(`Building transaction for 2-hop path: ${opportunity.buyDex} -> ${opportunity.sellDex}`);
+            }
 
             // Create versioned transaction
             const messageV0 = new TransactionMessage({

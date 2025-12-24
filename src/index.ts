@@ -148,11 +148,20 @@ export class SolanaArbitrageBot {
                 // Update balance periodically (every scan is fine, or every 5 scans)
                 this.currentBalance = await this.wallet.getBalance();
 
-                const opportunities = await this.detector.scanTokens(
-                    this.monitoredTokens,
-                    TOKENS.SOL,
-                    this.config.maxTradeSizeSol
-                );
+                // Scan for opportunities (Spot + Triangular)
+                const [spotOpps, triangularOpps] = await Promise.all([
+                    this.detector.scanTokens(
+                        this.monitoredTokens,
+                        TOKENS.SOL,
+                        this.config.maxTradeSizeSol
+                    ),
+                    this.detector.scanGraph(
+                        this.monitoredTokens,
+                        this.config.maxTradeSizeSol
+                    )
+                ]);
+
+                const opportunities = [...spotOpps, ...triangularOpps];
 
                 const scanTime = Date.now() - startTime;
 
