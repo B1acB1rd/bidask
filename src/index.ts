@@ -38,6 +38,7 @@ export class SolanaArbitrageBot {
     private riskManager: RiskManager;
     private executor: TradeExecutor;
     private telegram: TelegramNotifier;
+    private currentBalance: number = 0;
 
     // Bot state
     private isRunning = false;
@@ -142,6 +143,11 @@ export class SolanaArbitrageBot {
                 const startTime = Date.now();
 
                 // Scan for opportunities
+                const START_SCAN = Date.now();
+
+                // Update balance periodically (every scan is fine, or every 5 scans)
+                this.currentBalance = await this.wallet.getBalance();
+
                 const opportunities = await this.detector.scanTokens(
                     this.monitoredTokens,
                     TOKENS.SOL,
@@ -258,7 +264,7 @@ export class SolanaArbitrageBot {
             isRunning: this.isRunning && !this.isPaused,
             network: this.config.network,
             walletAddress: pubkey?.toBase58(),
-            balanceSol: 0, // Will be updated async
+            balanceSol: this.currentBalance,
             opportunitiesDetected: this.opportunitiesDetected,
             tradesExecuted: this.tradesExecuted,
             tradesSuccessful: this.tradesSuccessful,
