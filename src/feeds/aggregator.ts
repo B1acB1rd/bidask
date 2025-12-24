@@ -224,29 +224,32 @@ export class PriceAggregator {
     /**
      * Fetch quotes for all token permutations (for Triangular Arbitrage)
      * Warning: N^2 complexity. Keep token list small.
+     * Rate Limited: Sequential execution to avoid 429s
      */
     async getAllPairQuotes(tokens: string[], amount: number = 1): Promise<PriceQuote[]> {
         const quotes: PriceQuote[] = [];
-        const promises: Promise<PriceQuote[]>[] = [];
 
+        // Randomize order to avoid hitting same pair bottlenecks
+        const pairs: { from: string, to: string }[] = [];
         for (let i = 0; i < tokens.length; i++) {
             for (let j = 0; j < tokens.length; j++) {
                 if (i === j) continue;
-
-                // Create a batch of requests
-                promises.push(
-                    this.getQuotesForPair(tokens[i], tokens[j], amount)
-                );
+                pairs.push({ from: tokens[i], to: tokens[j] });
             }
         }
 
-        // Execute all batches
-        const results = await Promise.all(promises);
+        // Execute sequentially with delay
+        for (const pair of pairs) {
+            try {
+                // Add Small delay to be nice to public API
+                await new Promise(resolve => setTimeout(resolve, 300));
 
-        // Flatten results
-        results.forEach(batch => {
-            if (batch) quotes.push(...batch);
-        });
+                const pairQuotes = await this.getQuotesForPair(pair.from, pair.to, amount);
+                if (pairQuotes) quotes.push(...pairQuotes);
+            } catch (e) {
+                // Ignore individual failures
+            }
+        }
 
         return quotes;
     }
