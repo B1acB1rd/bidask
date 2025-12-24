@@ -20,14 +20,14 @@
     "@solana/spl-token": "^0.4.9",
     "@solana/web3.js": "^1.98.0",
     "@types/express": "^5.0.6",
-    "@types/uuid": "^10.0.0",
+    "@types/uuid": "^8.3.4",
     "axios": "^1.7.9",
     "bs58": "^6.0.0",
     "decimal.js": "^10.4.3",
     "dotenv": "^16.4.7",
     "express": "^5.2.1",
     "node-telegram-bot-api": "^0.66.0",
-    "uuid": "^13.0.0",
+    "uuid": "^8.3.2",
     "winston": "^3.17.0"
   },
   "devDependencies": {
