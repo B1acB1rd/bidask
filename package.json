@@ -1,0 +1,45 @@
+{
+  "name": "solana-arb-bot",
+  "version": "1.0.0",
+  "description": "Fast Solana DEX arbitrage bot with Jupiter, Raydium, Orca integration",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "start:devnet": "cross-env NETWORK=devnet node dist/index.js",
+    "start:mainnet": "cross-env NETWORK=mainnet-beta node dist/index.js",
+    "dev": "ts-node src/index.ts",
+    "dev:watch": "nodemon --exec ts-node src/index.ts",
+    "test": "jest",
+    "benchmark": "ts-node src/benchmark.ts"
+  },
+  "dependencies": {
+    "@jup-ag/api": "^6.0.29",
+    "@orca-so/whirlpools-sdk": "^0.13.12",
+    "@raydium-io/raydium-sdk-v2": "^0.1.95-alpha",
+    "@solana/spl-token": "^0.4.9",
+    "@solana/web3.js": "^1.98.0",
+    "@types/express": "^5.0.6",
+    "@types/uuid": "^10.0.0",
+    "axios": "^1.7.9",
+    "bs58": "^6.0.0",
+    "decimal.js": "^10.4.3",
+    "dotenv": "^16.4.7",
+    "express": "^5.2.1",
+    "node-telegram-bot-api": "^0.66.0",
+    "uuid": "^13.0.0",
+    "winston": "^3.17.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/node-telegram-bot-api": "^0.64.7",
+    "cross-env": "^7.0.3",
+    "jest": "^29.7.0",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
